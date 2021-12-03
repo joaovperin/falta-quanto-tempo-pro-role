@@ -11,17 +11,17 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final Color currentColor = Colors.blue;
-  // final Timer currentTime;;
 
   final int _horasDoRole = 18;
-  final int _minutosDoRole = 0;
-  final int _segundosDoRole = 0;
+  final int _minutosDoRole = 00;
+  final int _segundosDoRole = 00;
 
   String seconds = '00';
   String minutes = '00';
   String hours = '00';
 
   bool get isRunning => true;
+
   @override
   initState() {
     super.initState();
@@ -31,6 +31,14 @@ class _MyHomePageState extends State<MyHomePage> {
         minutes = fmt(event[1]);
         seconds = fmt(event[2]);
       });
+    }).onError((err) {
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => AlertDialog(
+                title: const Center(child: Text('Atenção!!')),
+                content: Text(err.message, textAlign: TextAlign.center),
+              ));
     });
   }
 
@@ -84,11 +92,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     '${fmt(_horasDoRole)}:${fmt(_minutosDoRole)}:${fmt(_segundosDoRole)}',
                     textAlign: TextAlign.center,
                     style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      decoration: TextDecoration.underline
-                    ),
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                        decoration: TextDecoration.underline),
                   ),
                   const SizedBox(height: 50),
                   const Text(
@@ -141,6 +148,9 @@ class _MyHomePageState extends State<MyHomePage> {
     while (true) {
       if (isRunning) {
         final _difference = _targetTime.difference(DateTime.now());
+        if (_difference.isNegative) {
+          throw const HoraDoRoleException('Hora do rolê já passou!');
+        }
         final diffStr = _difference.toString().split(':');
         yield [
           int.parse(diffStr[0]),
@@ -151,4 +161,9 @@ class _MyHomePageState extends State<MyHomePage> {
       await Future.delayed(const Duration(seconds: 1));
     }
   }
+}
+
+class HoraDoRoleException implements Exception {
+  const HoraDoRoleException(this.message);
+  final String message;
 }
