@@ -1,6 +1,16 @@
 import 'dart:async';
 
+import 'package:falta_quanto_tempo_pro_role/domain/app_date.dart';
 import 'package:flutter/material.dart';
+
+final horaDoRole = AppDate.create(
+  day: 29,
+  month: 07,
+  year: 2022,
+  hour: 17,
+  minute: 28,
+  second: 0,
+);
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
@@ -11,10 +21,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final Color currentColor = Colors.blue;
-
-  final int _horasDoRole = 18;
-  final int _minutosDoRole = 00;
-  final int _segundosDoRole = 00;
 
   String seconds = '00';
   String minutes = '00';
@@ -89,7 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    '${fmt(_horasDoRole)}:${fmt(_minutosDoRole)}:${fmt(_segundosDoRole)}',
+                    horaDoRole.fmtHumanDateTime,
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                         fontSize: 24,
@@ -136,14 +142,14 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Stream<List<int>> _getRemainingTime() async* {
-    final _now = DateTime.now();
+    final _now = horaDoRole;
     final _targetTime = DateTime(
       _now.year,
       _now.month,
       _now.day,
-      _horasDoRole,
-      _minutosDoRole,
-      _segundosDoRole,
+      _now.hour,
+      _now.minute,
+      _now.second,
     );
     while (true) {
       if (isRunning) {
