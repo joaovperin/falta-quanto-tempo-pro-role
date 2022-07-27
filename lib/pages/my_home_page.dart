@@ -4,11 +4,11 @@ import 'package:falta_quanto_tempo_pro_role/domain/app_date.dart';
 import 'package:flutter/material.dart';
 
 final horaDoRole = AppDate.create(
-  day: 29,
+  day: 28,
   month: 07,
   year: 2022,
   hour: 17,
-  minute: 28,
+  minute: 30,
   second: 0,
 );
 
@@ -61,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Falta quanto tempo pro role?'),
+        title: const Text('Falta quanto tempo pro rolê?'),
         backgroundColor: currentColor,
       ),
       body: Center(
@@ -155,7 +155,13 @@ class _MyHomePageState extends State<MyHomePage> {
       if (isRunning) {
         final _difference = _targetTime.difference(DateTime.now());
         if (_difference.isNegative) {
-          throw const HoraDoRoleException('Hora do rolê já passou!');
+          if (_difference.abs().inHours >= 1) {
+            throw const HoraDoRoleException('Hora do rolê já passou!');
+          } else {
+            throw const HoraDoRoleException(
+              '🎈🎈🎈🥳🥳 Tá na hora do rolê!!! 🥳🥳🎈🎈🎈\n',
+            );
+          }
         }
         final diffStr = _difference.toString().split(':');
         yield [
