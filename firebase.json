@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "falta-quanto-tempo-pro-role",
     "public": "build/web",
     "ignore": [
       "firebase.json",
