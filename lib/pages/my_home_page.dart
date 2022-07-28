@@ -1,15 +1,19 @@
 import 'dart:async';
 
 import 'package:falta_quanto_tempo_pro_role/domain/app_date.dart';
+import 'package:falta_quanto_tempo_pro_role/domain/app_role.dart';
 import 'package:flutter/material.dart';
 
-final horaDoRole = AppDate.create(
-  day: 28,
-  month: 07,
-  year: 2022,
-  hour: 17,
-  minute: 30,
-  second: 0,
+final role = AppRole(
+  'Rolê em Torres!!',
+  AppDate.create(
+    day: 28,
+    month: 07,
+    year: 2022,
+    hour: 17,
+    minute: 30,
+    second: 0,
+  ),
 );
 
 class MyHomePage extends StatefulWidget {
@@ -22,9 +26,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final Color currentColor = Colors.blue;
 
-  String seconds = '00';
-  String minutes = '00';
-  String hours = '00';
+  Duration remaining = const Duration();
 
   bool get isRunning => true;
 
@@ -32,11 +34,7 @@ class _MyHomePageState extends State<MyHomePage> {
   initState() {
     super.initState();
     _getRemainingTime().listen((event) {
-      setState(() {
-        hours = fmt(event[0]);
-        minutes = fmt(event[1]);
-        seconds = fmt(event[2]);
-      });
+      setState(() => remaining = event);
     }).onError((err) {
       showDialog(
           context: context,
@@ -65,91 +63,115 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: currentColor,
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              margin: const EdgeInsets.all(10),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Text(
-                    'Falta quanto tempo pro rolê?',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 46,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                margin: const EdgeInsets.all(10),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Falta quanto tempo pro rolê?',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 46,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 50),
-                  const Text(
-                    'Hora do rolê',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 46,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                    const SizedBox(height: 20),
+                    Text(
+                      role.name,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                          decoration: TextDecoration.underline),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    horaDoRole.fmtHumanDateTime,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
+                    const SizedBox(height: 50),
+                    const Text(
+                      'Hora do rolê',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 46,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      role.time.fmtHumanDateTime,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                          decoration: TextDecoration.underline),
+                    ),
+                    const SizedBox(height: 50),
+                    const Text(
+                      'Tempo restante',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 46,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      [
+                        if (remaining.inDays > 0)
+                          '${remaining.inDays % 31}dias',
+                        if (remaining.inHours > 0) '${remaining.inHours % 24}h',
+                        '${remaining.inMinutes % 60}min',
+                        '${remaining.inSeconds % 60}s'
+                      ].join(", "),
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
-                        decoration: TextDecoration.underline),
-                  ),
-                  const SizedBox(height: 50),
-                  const Text(
-                    'Tempo restante',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 46,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    '$hours h, $minutes min e $seconds s',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                    const SizedBox(height: 8),
+                    Text(
+                      '(${AppDate.create(
+                        day: remaining.inDays % 24,
+                        hour: remaining.inHours % 24,
+                        minute: remaining.inMinutes % 60,
+                        second: remaining.inSeconds % 60,
+                      ).fmtTime})',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.black,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    '($hours:$minutes:$seconds)',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.black,
-                    ),
-                  ),
-                ],
+                    const SizedBox(height: 50),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Stream<List<int>> _getRemainingTime() async* {
-    final _now = horaDoRole;
+  Stream<Duration> _getRemainingTime() async* {
+    final roleTime = role.time;
     final _targetTime = DateTime(
-      _now.year,
-      _now.month,
-      _now.day,
-      _now.hour,
-      _now.minute,
-      _now.second,
+      roleTime.year,
+      roleTime.month,
+      roleTime.day,
+      roleTime.hour,
+      roleTime.minute,
+      roleTime.second,
     );
     while (true) {
       if (isRunning) {
@@ -163,12 +185,7 @@ class _MyHomePageState extends State<MyHomePage> {
             );
           }
         }
-        final diffStr = _difference.toString().split(':');
-        yield [
-          int.parse(diffStr[0]),
-          int.parse(diffStr[1]),
-          int.parse(diffStr[2].substring(0, diffStr[2].indexOf('.')))
-        ];
+        yield _difference;
       }
       await Future.delayed(const Duration(seconds: 1));
     }
