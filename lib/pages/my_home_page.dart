@@ -5,12 +5,12 @@ import 'package:falta_quanto_tempo_pro_role/domain/app_role.dart';
 import 'package:flutter/material.dart';
 
 final role = AppRole(
-  'Praiera em Magistério!!',
+  'Acamps da virada!!',
   AppDate.create(
-    day: 07,
-    month: 09,
+    day: 31,
+    month: 12,
     year: 2022,
-    hour: 09,
+    hour: 08,
     minute: 00,
     second: 00,
   ),
